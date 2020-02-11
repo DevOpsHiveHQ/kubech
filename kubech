@@ -12,9 +12,9 @@ NOTE:
   kubech does nothing by itself.
 
 USAGE:
-  kcc             : list all contexts
+  kcc             : List all contexts
   kcc <CONTEXT>   : Switch to context <CONTEXT>
-  knn             : list all namespaces
+  knn             : List all namespaces
   knn <NAMESPACE> : Switch to namespace <NAMESPACE>
 EOF
 }
@@ -32,8 +32,7 @@ fi
 # Generate kubectl config for a single context.
 _kgg () {
     kube_context=${1}
-    arg2=${2}
-    kube_namespace=${arg2:=default}
+    kube_namespace=${2:-default}
     kube_config_file="${kube_context}-${kube_namespace}"
 
     KUBECONFIG="${HOME}/.kube/config"
@@ -49,8 +48,7 @@ _kgg () {
 # Change kubectl context.
 kcc () {
     kube_context=${1}
-    _kube_namespace=${2}
-    kube_namespace=${_kube_namespace:=default}
+    kube_namespace=${2:-default}
     kube_config_file="${kube_context}-${kube_namespace}"
 
     if [[ -n ${kube_context} ]]; then
@@ -73,8 +71,7 @@ complete -F _kcc_completions kcc
 #
 # Change kubectl namespace
 knn () {
-    arg1=${1}
-    kube_namespace=${arg1:=default}
+    kube_namespace=${1:-default}
 
     if [[ -n ${1} ]]; then
         kcc $(kubectl config current-context) ${kube_namespace}
