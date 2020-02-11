@@ -1,7 +1,16 @@
 #
 # This script is meant to be sourced in .bashrc file.
-# Simple script to use different contexts/namespaces in multiple shells.
-# Commands support autocomplete by default.
+#
+# Kubech is a simple tool that lets you set contexts/namespaces per shell/terminal.
+# That's help you to manage multi Kubernetes cluster at the same time.
+
+#
+# Vars.
+kube_config_dir=$HOME/.kube/config.d
+
+# Set kcc/knn aliases along with kubechc/kubechn.
+kubech_short_aliases=${KUBECH_SHORT_ALIASES:-True}
+
 
 #
 # Usage.
@@ -12,17 +21,16 @@ NOTE:
   kubech does nothing by itself.
 
 USAGE:
-  kcc             : List all contexts
-  kcc <CONTEXT>   : Switch to context <CONTEXT>
-  knn             : List all namespaces
-  knn <NAMESPACE> : Switch to namespace <NAMESPACE>
+  kubechc             : List all contexts
+  kubechc <CONTEXT>   : Switch to context <CONTEXT>
+  kubechn             : List all namespaces
+  kubechn <NAMESPACE> : Switch to namespace <NAMESPACE>
 EOF
 }
 
 
 #
 # General.
-kube_config_dir=$HOME/.kube/config.d
 if ! [[ -d ${kube_config_dir} ]]; then
     mkdir -p ${kube_config_dir}
 fi
@@ -30,12 +38,12 @@ fi
 
 #
 # Generate kubectl config for a single context.
-_kgg () {
+_kubechg () {
     kube_context=${1}
     kube_namespace=${2:-default}
     kube_config_file="${kube_context}-${kube_namespace}"
-
     KUBECONFIG="${HOME}/.kube/config"
+
     kubectl config view            \
         --minify                   \
         --flatten                  \
@@ -46,13 +54,13 @@ _kgg () {
 
 #
 # Change kubectl context.
-kcc () {
+kubechc () {
     kube_context=${1}
     kube_namespace=${2:-default}
     kube_config_file="${kube_context}-${kube_namespace}"
 
     if [[ -n ${kube_context} ]]; then
-        _kgg ${kube_context} ${kube_namespace}
+        _kubechg ${kube_context} ${kube_namespace}
         export KUBECONFIG="${kube_config_dir}/${kube_config_file}"
         kubectl config use-context ${kube_context}
     else
@@ -60,30 +68,40 @@ kcc () {
     fi
 }
 
-# Auto complete for "kcc" command.
-_kcc_completions() {
-    COMPREPLY=($(compgen -W "$(kcc | tr '\n' ' ')" "${COMP_WORDS[1]}"))
+# Auto complete for "kubechc" command.
+_kubechc_completions() {
+    COMPREPLY=($(compgen -W "$(kubechc | tr '\n' ' ')" "${COMP_WORDS[1]}"))
 }
 
-complete -F _kcc_completions kcc
+complete -F _kubechc_completions kubechc
 
 
 #
 # Change kubectl namespace
-knn () {
+kubechn () {
     kube_namespace=${1:-default}
 
     if [[ -n ${1} ]]; then
-        kcc $(kubectl config current-context) ${kube_namespace}
+        kubechc $(kubectl config current-context) ${kube_namespace}
         echo "Namespace: ${kube_namespace}"
     else
         kubectl get namespaces --no-headers=true -o name | sed 's/^namespace\///g'
     fi
 }
 
-# Auto complete for "knn" command.
-_knn_completions() {
-    COMPREPLY=($(compgen -W "$(knn | tr '\n' ' ')" "${COMP_WORDS[1]}"))
+# Auto complete for "kubechn" command.
+_kubechn_completions() {
+    COMPREPLY=($(compgen -W "$(kubechn | tr '\n' ' ')" "${COMP_WORDS[1]}"))
 }
 
-complete -F _knn_completions knn
+complete -F _kubechn_completions kubechn
+
+
+#
+# Enable short names for lazy people like me :-)
+if [[ ${kubech_short_aliases,,} == 'true' ]]; then
+    alias kcc='kubechc'
+    alias knn='kubechn'
+    complete -F _kubechc_completions kcc
+    complete -F _kubechn_completions knn
+fi
