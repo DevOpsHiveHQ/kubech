@@ -13,6 +13,7 @@ Set kubectl contexts/namespaces per shell/terminal to manage multi Kubernetes cl
   - [List available namespaces](#list-available-namespaces)
   - [Switch to context](#switch-to-context)
 - [Notes](#notes)
+- [To-do](#to-do)
 
 ## Why
 - If you manage multi K8s clusters, you will need a handy way to work more than one cluster at the same time.
@@ -73,3 +74,7 @@ $ kubechn monitoring
 - It's recommended to use this tool with [kube-ps1](https://github.com/jonmosco/kube-ps1) so current cluster is more visible.
 - It's still recommended to have [kubectx/kubens](https://github.com/ahmetb/kubectx) to manage contexts/namespaces globally.
 - Once `kubech` is used to change context/namespace, it's not possible to change context/namespace again in the same shell. Open a new shell/terminal to be able to list and change to all contexts/namespaces again.
+
+## To-do
+- Add support for `zsh` (if you have an experience with zsh feel free to make a PR).
+- Test it with older `bash` versions like bash 3 on MacOS.
