@@ -1,5 +1,5 @@
 #
-# This script is meant to be sourced in .bashrc file.
+# This script is meant to be sourced in shell config file e.g. ".bashrc" in bash.
 #
 # Kubech is a simple tool that lets you set contexts/namespaces per shell/terminal.
 # That's help you to manage multi Kubernetes cluster at the same time.
@@ -8,17 +8,14 @@
 # Vars.
 kube_config_dir=$HOME/.kube/config.d
 
-# Set kcc/knn aliases along with kubechc/kubechn.
-kubech_short_aliases=${KUBECH_SHORT_ALIASES:-True}
-
 
 #
 # Usage.
 kubech() {
   cat <<EOF
 NOTE:
-  The command "kubech" is just a meta for other commands.
-  kubech does nothing by itself.
+  - The command "kubech" is just a meta for other commands. So kubech does nothing by itself.
+  - Short names "kchc/kchn" also available.
 
 USAGE:
   kubechc             : List all contexts
@@ -68,13 +65,7 @@ kubechc () {
     fi
 }
 
-# Auto complete for "kubechc" command.
-_kubechc_completions() {
-    COMPREPLY=($(compgen -W "$(kubechc | tr '\n' ' ')" "${COMP_WORDS[1]}"))
-}
-
-complete -F _kubechc_completions kubechc
-
+alias kchc='kubechc'
 
 #
 # Change kubectl namespace
@@ -89,19 +80,4 @@ kubechn () {
     fi
 }
 
-# Auto complete for "kubechn" command.
-_kubechn_completions() {
-    COMPREPLY=($(compgen -W "$(kubechn | tr '\n' ' ')" "${COMP_WORDS[1]}"))
-}
-
-complete -F _kubechn_completions kubechn
-
-
-#
-# Enable short names for lazy people like me :-)
-if [[ ${kubech_short_aliases,,} == 'true' ]]; then
-    alias kcc='kubechc'
-    alias knn='kubechn'
-    complete -F _kubechc_completions kcc
-    complete -F _kubechn_completions knn
-fi
+alias kchn='kubechn'
