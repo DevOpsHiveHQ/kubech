@@ -71,12 +71,18 @@ alias kchc='kubechc'
 # Change kubectl namespace
 kubechn () {
     kube_namespace=${1:-default}
+    kube_namespace_all=$(kubectl get namespaces --no-headers=true -o name | sed 's/^namespace\///g')
 
     if [[ -n ${1} ]]; then
-        kubechc $(kubectl config current-context) ${kube_namespace}
-        echo "Namespace: ${kube_namespace}"
+        # Only switch namespace if it exists.
+        if [[ $(echo "${kube_namespace_all}" | egrep "^${kube_namespace}$") ]]; then
+            kubechc $(kubectl config current-context) ${kube_namespace}
+            echo "Switched to namespace \"${kube_namespace}\""
+        else
+            echo "The namespace \"${kube_namespace}\" doesn't exist"
+        fi
     else
-        kubectl get namespaces --no-headers=true -o name | sed 's/^namespace\///g'
+        echo "${kube_namespace_all}"
     fi
 }
 
