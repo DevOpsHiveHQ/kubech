@@ -71,7 +71,7 @@ alias kchc='kubechc'
 # Change kubectl namespace
 kubechn () {
     kube_namespace=${1:-default}
-    kube_namespace_all=$(kubectl get namespaces --no-headers=true -o name | sed 's/^namespace\///g')
+    kube_namespace_all=$(kubectl get namespaces -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
 
     if [[ -n ${1} ]]; then
         # Only switch namespace if it exists.
