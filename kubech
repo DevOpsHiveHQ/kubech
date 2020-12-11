@@ -46,6 +46,8 @@ _kubechg () {
         --flatten                  \
         --context=${kube_context}  |
         sed -r 's/((\s+)cluster: .+)/\1\n\2namespace: '${kube_namespace}'/g' > ${kube_config_dir}/${kube_config_file}
+
+    chmod 600 "${kube_config_dir}/${kube_config_file}"
 }
 
 
