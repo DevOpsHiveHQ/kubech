@@ -27,6 +27,15 @@ EOF
 
 
 #
+# Remember original kubeconfig.
+if [[ $KUBECONFIG ]]; then
+  kube_config_org=${KUBECONFIG}
+else
+  kube_config_org="${HOME}/.kube/config"
+fi
+
+
+#
 # General.
 if ! [[ -d ${kube_config_dir} ]]; then
     mkdir -p ${kube_config_dir}
@@ -63,7 +72,7 @@ kubechc () {
         export KUBECONFIG="${kube_config_dir}/${kube_config_file}"
         kubectl config use-context ${kube_context}
     else
-        kubectl config get-contexts --no-headers=true -o name
+        kubectl config get-contexts --kubeconfig=${kube_config_org} --no-headers=true -o name
     fi
 }
 
