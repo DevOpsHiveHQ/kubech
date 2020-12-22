@@ -34,6 +34,31 @@ fi
 
 
 #
+# Merge a new kubectl config file with the main one.
+_kubechm () {
+    kube_config_file_to_merge="${1}"
+
+    if ! [[ -f "${kube_config_file_to_merge}" ]]; then
+        echo "This command needs an existing file path as an argument."
+        echo "Use: _kubechm KUBECONFIG_TO_MERGE_FILE_PATH"
+        return 1
+    fi
+
+    kube_config_file_main="${KUBECONFIG:=$HOME/.kube/config}"
+    kube_config_file_main_backup="${kube_config_file_main}_$(date '+%Y%m%d_%H%M%S')"
+
+    echo "Backup current main kubectl config file ..."
+    cp -a "${kube_config_file_main}" "${kube_config_file_main_backup}" &&
+
+    echo "Update current main kubectl config file ..."
+    export KUBECONFIG=${kube_config_file_main_backup}:${kube_config_file_to_merge}
+    kubectl config view --flatten > "${kube_config_file_main}"
+
+    echo "Current main kubectl config file has been updated."
+}
+
+
+#
 # Generate kubectl config for a single context.
 _kubechg () {
     kube_context=${1}
