@@ -28,8 +28,8 @@ EOF
 
 #
 # General.
-if ! [[ -d ${kube_config_dir} ]]; then
-    mkdir -p ${kube_config_dir}
+if ! [[ -d "${kube_config_dir}" ]]; then
+    mkdir -p "${kube_config_dir}"
 fi
 
 
@@ -66,11 +66,12 @@ _kubechg () {
     kube_config_file="${kube_context}-${kube_namespace}"
     KUBECONFIG="${HOME}/.kube/config"
 
-    kubectl config view            \
-        --minify                   \
-        --flatten                  \
-        --context=${kube_context}  |
-        sed -r 's/((\s+)cluster: .+)/\1\n\2namespace: '${kube_namespace}'/g' > ${kube_config_dir}/${kube_config_file}
+    kubectl config view             \
+        --minify                    \
+        --flatten                   \
+        --context="${kube_context}" |
+        sed -r 's/((\s+)cluster: .+)/\1\n\2namespace: '"${kube_namespace}"'/g' > \
+        "${kube_config_dir}/${kube_config_file}"
 
     chmod 600 "${kube_config_dir}/${kube_config_file}"
 }
@@ -83,10 +84,10 @@ kubechc () {
     kube_namespace=${2:-default}
     kube_config_file="${kube_context}-${kube_namespace}"
 
-    if [[ -n ${kube_context} ]]; then
-        _kubechg ${kube_context} ${kube_namespace}
+    if [[ -n "${kube_context}" ]]; then
+        _kubechg "${kube_context}" "${kube_namespace}"
         export KUBECONFIG="${kube_config_dir}/${kube_config_file}"
-        kubectl config use-context ${kube_context}
+        kubectl config use-context "${kube_context}"
     else
         kubectl config get-contexts --no-headers=true -o name
     fi
@@ -102,8 +103,8 @@ kubechn () {
 
     if [[ -n ${1} ]]; then
         # Only switch namespace if it exists.
-        if [[ $(echo "${kube_namespace_all}" | egrep "^${kube_namespace}$") ]]; then
-            kubechc $(kubectl config current-context) ${kube_namespace}
+        if echo "${kube_namespace_all}" | grep -qE "^${kube_namespace}$"; then
+            kubechc "$(kubectl config current-context)" "${kube_namespace}"
             echo "Switched to namespace \"${kube_namespace}\""
         else
             echo "The namespace \"${kube_namespace}\" doesn't exist"

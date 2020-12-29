@@ -1,0 +1,34 @@
+name: 'Kubech CI'
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  sh-lint:
+    name: Lint shell files (shellcheck)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run ShellCheck
+      uses: ludeeus/action-shellcheck@master
+      with:
+        additional_files: 'kubech*'
+      env:
+        SHELLCHECK_OPTS: -e SC1091 -e SC2148 -e SC2207
+  sh-fmt:
+    name: Fmt shell files (shfmt)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run the sh-checker
+      uses: luizm/action-sh-checker@v0.1.9
+      env:
+        # Disable shellcheck because there no option in sh-check to read sh files without extension.
+        SHELLCHECK_DISABLE: 1
+        # Shfmt.
+        SHFMT_OPTS: -sr -i 4 -d -ci
