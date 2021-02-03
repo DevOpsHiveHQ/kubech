@@ -115,3 +115,11 @@ kubechn () {
 }
 
 alias kchn='kubechn'
+
+#
+# Unset current context
+kubechu () {
+    kubectl config unset current-context
+}
+
+alias kchu='kubechu'
