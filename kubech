@@ -27,11 +27,11 @@ EOF
 
 
 #
-# Remember original kubeconfig.
-if [[ $KUBECONFIG ]]; then
-  kube_config_org=${KUBECONFIG}
+# Store original path of kubeconfig.
+if [[ -n "${KUBECONFIG}" ]]; then
+    kube_config_file_orig="${KUBECONFIG}"
 else
-  kube_config_org="${HOME}/.kube/config"
+    kube_config_file_orig="${HOME}/.kube/config"
 fi
 
 
@@ -70,8 +70,8 @@ _kubechm () {
 #
 # Generate kubectl config for a single context.
 _kubechg () {
-    kube_context=${1}
-    kube_namespace=${2:-default}
+    kube_context="${1}"
+    kube_namespace="${2:-default}"
     kube_config_file="${kube_context}-${kube_namespace}"
     KUBECONFIG="${HOME}/.kube/config"
 
@@ -89,8 +89,8 @@ _kubechg () {
 #
 # Change kubectl context.
 kubechc () {
-    kube_context=${1}
-    kube_namespace=${2:-default}
+    kube_context="${1}"
+    kube_namespace="${2:-default}"
     kube_config_file="${kube_context}-${kube_namespace}"
 
     if [[ -n "${kube_context}" ]]; then
@@ -98,7 +98,7 @@ kubechc () {
         export KUBECONFIG="${kube_config_dir}/${kube_config_file}"
         kubectl config use-context "${kube_context}"
     else
-        kubectl config get-contexts --kubeconfig=${kube_config_org} --no-headers=true -o name
+        kubectl config get-contexts --kubeconfig="${kube_config_file_orig}" --no-headers=true -o name
     fi
 }
 
@@ -107,7 +107,7 @@ alias kchc='kubechc'
 #
 # Change kubectl namespace
 kubechn () {
-    kube_namespace=${1:-default}
+    kube_namespace="${1:-default}"
     kube_namespace_all=$(kubectl get namespaces -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
 
     if [[ -n ${1} ]]; then
