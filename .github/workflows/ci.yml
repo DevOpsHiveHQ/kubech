@@ -26,9 +26,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Run the sh-checker
-      uses: luizm/action-sh-checker@v0.1.9
+      uses: luizm/action-sh-checker@v0.3.0
       env:
-        # Disable shellcheck because there no option in sh-check to read sh files without extension.
-        SHELLCHECK_DISABLE: 1
-        # Shfmt.
         SHFMT_OPTS: -sr -i 4 -d -ci
+      with:
+        # Disable shellcheck because there no option in sh-check to read sh files without extension.
+        sh_checker_shellcheck_disable: true
