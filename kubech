@@ -4,67 +4,79 @@
 # Kubech is a simple tool that lets you set contexts/namespaces per shell/terminal.
 # That's help you to manage multi Kubernetes cluster at the same time.
 
+
 #
 # Vars.
-kube_config_dir=$HOME/.kube/config.d
+KUBECONFIG_ORIG="${KUBECONFIG:-$HOME/.kube/config}"
+KUBECONFIG_SRC_DIR="${KUBECONFIG_SRC_DIR:-$HOME/.kube/config.src.d}"
+KUBECONFIG_DEST_DIR="${KUBECONFIG_DEST_DIR:-$HOME/.kube/config.dest.d}"
+KUBECONFIG_ACTIVE=""
 
 
 #
 # Usage.
-kubech() {
+kubech () {
   cat <<EOF
 NOTE:
   - The command "kubech" is just a meta for other commands. So kubech does nothing by itself.
-  - Short names "kchc/kchn" also available.
+  - Also short names like "kchc/kchn/kchu" are available.
+
+VARS:
+  KUBECONFIG_SRC_DIR  : Set directory with extra kubectl config files to read in kubech commands.
+                        This allow to have multiple config files in addition to the one at "\$HOME/.kube/config".
+                        Default: "${KUBECONFIG_SRC_DIR}"
+  KUBECONFIG_DEST_DIR : Set directory for temporary kubectl config files. The files in this directory are auto-generated
+                        by kubech commands and you don't need to interact with them or even change that var.
+                        Default: "${KUBECONFIG_DEST_DIR}"
 
 USAGE:
   kubechc             : List all contexts
   kubechc <CONTEXT>   : Switch to context <CONTEXT>
   kubechn             : List all namespaces
   kubechn <NAMESPACE> : Switch to namespace <NAMESPACE>
+  kubechu             : Unset the active context (to avoid applying config by mistake to the wrong cluster)
 EOF
 }
 
 
 #
-# Store original path of kubeconfig.
-if [[ -n "${KUBECONFIG}" ]]; then
-    kube_config_file_orig="${KUBECONFIG}"
-else
-    kube_config_file_orig="${HOME}/.kube/config"
-fi
+# Handeling Kube config files.
+_kubeconfig_files () {
+    if [ -d "${KUBECONFIG_SRC_DIR}" ]; then
+        KUBECONFIG_FILES="$(find "${KUBECONFIG_SRC_DIR}" -type f -printf '%p:')"
+    fi
+    echo "${KUBECONFIG_FILES}${KUBECONFIG_ORIG}"
+}
+
+_kube_config () {
+    KUBECONFIG_DEFAULT="$(_kubeconfig_files)"
+    if [ -n "${1}" ]; then
+        if [ "${KUBECONFIG}" == "${KUBECONFIG_ACTIVE}" ]; then
+            export KUBECONFIG="${1}:${KUBECONFIG_DEFAULT}"
+        else
+            export KUBECONFIG="${1}:${KUBECONFIG}:${KUBECONFIG_DEFAULT}"
+        fi
+        KUBECONFIG_ACTIVE="${KUBECONFIG}"
+
+    elif [ -n "${KUBECONFIG}" ]; then
+        KUBECONFIG_ACTIVE="${KUBECONFIG}:${KUBECONFIG_DEFAULT}"
+        echo "${KUBECONFIG_ACTIVE}"
+
+    else
+        KUBECONFIG_ACTIVE="${KUBECONFIG_DEFAULT}:${KUBECONFIG_ORIG}"
+        echo "${KUBECONFIG_ACTIVE}"
+    fi
+}
 
 
 #
 # General.
-if ! [[ -d "${kube_config_dir}" ]]; then
-    mkdir -p "${kube_config_dir}"
+if ! [[ -d "${KUBECONFIG_DEST_DIR}" ]]; then
+    mkdir -p "${KUBECONFIG_DEST_DIR}"
 fi
 
-
-#
-# Merge a new kubectl config file with the main one.
-_kubechm () {
-    kube_config_file_to_merge="${1}"
-
-    if ! [[ -f "${kube_config_file_to_merge}" ]]; then
-        echo "This command needs an existing file path as an argument."
-        echo "Use: _kubechm KUBECONFIG_TO_MERGE_FILE_PATH"
-        return 1
-    fi
-
-    kube_config_file_main="${KUBECONFIG:=$HOME/.kube/config}"
-    kube_config_file_main_backup="${kube_config_file_main}_$(date '+%Y%m%d_%H%M%S')"
-
-    echo "Backup current main kubectl config file ..."
-    cp -a "${kube_config_file_main}" "${kube_config_file_main_backup}" &&
-
-    echo "Update current main kubectl config file ..."
-    export KUBECONFIG=${kube_config_file_main_backup}:${kube_config_file_to_merge}
-    kubectl config view --flatten > "${kube_config_file_main}"
-
-    echo "Current main kubectl config file has been updated."
-}
+# Set secure permession for config dirs.
+chmod 744 "${KUBECONFIG_SRC_DIR}" "${KUBECONFIG_DEST_DIR}"
 
 
 #
@@ -72,16 +84,17 @@ _kubechm () {
 _kubechg () {
     kube_context="${1}"
     kube_namespace="${2:-default}"
-    kube_config_file="${kube_context}-${kube_namespace}"
+    kubeconfig_file="${kube_context}-${kube_namespace}"
 
-    touch "${kube_config_dir}/${kube_config_file}"
-    chmod 600 "${kube_config_dir}/${kube_config_file}"
+    touch "${KUBECONFIG_DEST_DIR}/${kubeconfig_file}"
+    chmod 600 "${KUBECONFIG_DEST_DIR}/${kubeconfig_file}"
 
+    KUBECONFIG="$(_kube_config)"    \
     kubectl config view             \
         --minify                    \
         --flatten                   \
         --context="${kube_context}" > \
-        "${kube_config_dir}/${kube_config_file}"
+        "${KUBECONFIG_DEST_DIR}/${kubeconfig_file}"
 }
 
 
@@ -90,18 +103,18 @@ _kubechg () {
 kubechc () {
     kube_context="${1}"
     kube_namespace="${2:-default}"
-    kube_config_file="${kube_context}-${kube_namespace}"
 
     if [[ -n "${kube_context}" ]]; then
         _kubechg "${kube_context}" "${kube_namespace}"
-        export KUBECONFIG="${kube_config_dir}/${kube_config_file}"
-        kubectl config use-context "${kube_context}"
+        _kube_config "${KUBECONFIG_DEST_DIR}/${kube_context}-${kube_namespace}"
+        # kubectl config current-context
     else
-        kubectl config get-contexts --kubeconfig="${kube_config_file_orig}" --no-headers=true -o name
+        KUBECONFIG=$(_kube_config) kubectl config get-contexts --no-headers=true -o name
     fi
 }
 
 alias kchc='kubechc'
+
 
 #
 # Change kubectl namespace
@@ -125,8 +138,9 @@ kubechn () {
 
 alias kchn='kubechn'
 
+
 #
-# Unset current context
+# Unset the active context.
 kubechu () {
     kubectl config unset current-context
 }

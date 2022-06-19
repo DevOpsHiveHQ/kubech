@@ -28,9 +28,10 @@ i.e. same as `kubectx/kubens` but per shell/terminal.
 ## Features
 - Each shell/terminal will have its own context (K8s cluster) or namespace!
 - Easy to use! Just source it in your favorite shell.
-- No aliases, no extra customizations, it doesn't matter if you work with 1 or 100 K8s clusters!
+- It works out of the box! No aliases, no extra customizations, it doesn't matter if you work with 1 or 100 K8s clusters!
 - It still can be used along with other tools like `kubectx/kubens`.
 - It doesn't change anything in `~/.kube/config` file. So it works perfectly with static and dynamic kube config files.
+- It supports extra kubectl config (in addition to `~/.kube/config`).
 - It supports autocomplete for contexts and namespaces.
 
 ## Install
@@ -49,14 +50,22 @@ echo 'source ~/.kubech/completion/kubech.bash' >> ~/.bashrc
 ```
 NOTE:
   - The command "kubech" is just a meta for other commands. So kubech does nothing by itself.
-  - Short names "kchc/kchn" are also available.
+  - Also short names like "kchc/kchn/kchu" are available.
+
+VARS:
+  KUBECONFIG_SRC_DIR  : Set directory with extra kubectl config files to read in kubech commands.
+                        This allow to have multiple config files in addition to the one at "$HOME/.kube/config".
+                        Default: "/home/ahmed/.kube/config.src.d"
+  KUBECONFIG_DEST_DIR : Set directory for temporary kubectl config files. The files in this directory are auto-generated
+                        by kubech commands and you don't need to interact with them or even change that var.
+                        Default: "/home/ahmed/.kube/config.dest.d"
 
 USAGE:
   kubechc             : List all contexts
   kubechc <CONTEXT>   : Switch to context <CONTEXT>
   kubechn             : List all namespaces
   kubechn <NAMESPACE> : Switch to namespace <NAMESPACE>
-
+  kubechu             : Unset the active context (to avoid applying config by mistake to the wrong cluster)
 ```
 
 ### List available contexts
