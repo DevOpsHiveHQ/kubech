@@ -51,7 +51,7 @@ _kubeconfig_files () {
 _kube_config () {
     KUBECONFIG_DEFAULT="$(_kubeconfig_files)"
     if [ -n "${1}" ]; then
-        if [ "${KUBECONFIG}" == "${KUBECONFIG_ACTIVE}" ]; then
+        if [[ "${KUBECONFIG}" == "${KUBECONFIG_ACTIVE}" ]]; then
             export KUBECONFIG="${1}:${KUBECONFIG_DEFAULT}"
         else
             export KUBECONFIG="${1}:${KUBECONFIG}:${KUBECONFIG_DEFAULT}"
