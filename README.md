@@ -10,6 +10,7 @@ i.e. same as `kubectx/kubens` but per shell/terminal.
 - [Features](#features)
 - [Install](#install)
   - [Bash](#bash)
+  - [Zsh](#zsh)
 - [Usage](#usage)
   - [List available contexts](#list-available-contexts)
   - [Switch context](#switch-context)
@@ -44,6 +45,17 @@ git clone https://github.com/aabouzaid/kubech ~/.kubech
 ```
 echo 'source ~/.kubech/kubech' >> ~/.bashrc
 echo 'source ~/.kubech/completion/kubech.bash' >> ~/.bashrc
+```
+### ZSH  
+Completion for `zsh` with `oh-my-zsh` enabled .
+```
+echo 'source ~/.kubech/kubech' >> ~/.zshrc
+ln -s ~/.kubech/completion/kubechn.zsh ~/.oh-my-zsh/completions/_kubechn.zsh
+ln -s ~/.kubech/completion/kubechc.zsh ~/.oh-my-zsh/completions/_kubechc.zsh
+```
+Please make sure `autoload -U compinit && compinit` is added to `~/.zshrc` if not please excute below command .
+```
+echo  'autoload -U compinit && compinit' >> ~/.zshrc
 ```
 
 ## Usage
