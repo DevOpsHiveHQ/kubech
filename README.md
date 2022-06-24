@@ -46,7 +46,7 @@ git clone https://github.com/aabouzaid/kubech ~/.kubech
 echo 'source ~/.kubech/kubech' >> ~/.bashrc
 echo 'source ~/.kubech/completion/kubech.bash' >> ~/.bashrc
 ```
-### ZSH  
+### Zsh
 Completion for `zsh` with `oh-my-zsh` enabled .
 ```
 echo 'source ~/.kubech/kubech' >> ~/.zshrc
@@ -114,5 +114,4 @@ $ kubechn monitoring
 - It's still recommended to have [kubectx/kubens](https://github.com/ahmetb/kubectx) to manage contexts/namespaces globally.
 
 ## To-do
-- Add autocomplete support for `zsh` (if you have an experience with zsh feel free to make a PR).
 - Test it with older `bash` versions like bash v3 on MacOS.
