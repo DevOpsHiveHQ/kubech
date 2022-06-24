@@ -40,6 +40,14 @@ EOF
 
 
 #
+# General.
+
+# Create config dirs.
+mkdir -p "${KUBECONFIG_SRC_DIR}" "${KUBECONFIG_DEST_DIR}"
+chmod 744 "${KUBECONFIG_SRC_DIR}" "${KUBECONFIG_DEST_DIR}"
+
+
+#
 # Handeling Kube config files.
 _kubeconfig_files () {
     if [ -d "${KUBECONFIG_SRC_DIR}" ]; then
@@ -67,16 +75,6 @@ _kube_config () {
         echo "${KUBECONFIG_ACTIVE}"
     fi
 }
-
-
-#
-# General.
-if ! [[ -d "${KUBECONFIG_DEST_DIR}" ]]; then
-    mkdir -p "${KUBECONFIG_DEST_DIR}"
-fi
-
-# Set secure permession for config dirs.
-chmod 744 "${KUBECONFIG_SRC_DIR}" "${KUBECONFIG_DEST_DIR}"
 
 
 #
