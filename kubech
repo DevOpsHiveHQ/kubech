@@ -54,7 +54,7 @@ chmod 744 "${KUBECONFIG_SRC_DIR}" "${KUBECONFIG_DEST_DIR}"
 # Handeling Kube config files.
 _kubeconfig_files () {
     if [ -d "${KUBECONFIG_SRC_DIR}" ]; then
-        KUBECONFIG_FILES="$(find "${KUBECONFIG_SRC_DIR}" -type f -print0 | tr '/n' ':')"
+        KUBECONFIG_FILES="$(find "${KUBECONFIG_SRC_DIR}" -type f -print | tr '\n' ':')"
     fi
     echo "${KUBECONFIG_FILES}${KUBECONFIG_ORIG}"
 }
