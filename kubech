@@ -85,7 +85,7 @@ _kube_config () {
 _kubechg () {
     kube_context="${1}"
     kube_namespace="${2:-default}"
-    kubeconfig_file="${kube_context}-${kube_namespace}"
+    kubeconfig_file="${kube_context}-${kube_namespace}.yaml"
 
     touch "${KUBECONFIG_DEST_DIR}/${kubeconfig_file}"
     chmod 600 "${KUBECONFIG_DEST_DIR}/${kubeconfig_file}"
@@ -107,7 +107,7 @@ kubechc () {
 
     if [[ -n "${kube_context}" ]]; then
         _kubechg "${kube_context}" "${kube_namespace}"
-        _kube_config "${KUBECONFIG_DEST_DIR}/${kube_context}-${kube_namespace}"
+        _kube_config "${KUBECONFIG_DEST_DIR}/${kube_context}-${kube_namespace}.yaml"
         # kubectl config current-context
     else
         KUBECONFIG=$(_kube_config) kubectl config get-contexts --no-headers=true -o name
