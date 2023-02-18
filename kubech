@@ -81,11 +81,22 @@ _kube_config () {
 
 
 #
+# Remove non-alphanumeric characters in kubeconfig filename for certain kube context.
+_kube_context_filename () {
+  kube_context="${1}"
+  kube_namespace="${2}"
+  kube_context_filename=$(echo "${kube_context}" | tr -c '[:alnum:]\n' '_')
+
+  echo "${kube_context_filename}-${kube_namespace}.yaml"
+}
+
+
+#
 # Generate kubectl config for a single context.
 _kubechg () {
     kube_context="${1}"
     kube_namespace="${2:-default}"
-    kubeconfig_file="${kube_context}-${kube_namespace}.yaml"
+    kubeconfig_file="$(_kube_context_filename "${kube_context}" "${kube_namespace}")"
 
     touch "${KUBECONFIG_DEST_DIR}/${kubeconfig_file}"
     chmod 600 "${KUBECONFIG_DEST_DIR}/${kubeconfig_file}"
@@ -107,7 +118,7 @@ kubechc () {
 
     if [[ -n "${kube_context}" ]]; then
         _kubechg "${kube_context}" "${kube_namespace}"
-        _kube_config "${KUBECONFIG_DEST_DIR}/${kube_context}-${kube_namespace}.yaml"
+        _kube_config "${KUBECONFIG_DEST_DIR}/$(_kube_context_filename "${kube_context}" "${kube_namespace}")"
         # kubectl config current-context
     else
         KUBECONFIG=$(_kube_config) kubectl config get-contexts --no-headers=true -o name
