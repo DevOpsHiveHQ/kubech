@@ -11,7 +11,7 @@ KUBECONFIG_ORIG="${KUBECONFIG:-$HOME/.kube/config}"
 KUBECONFIG_SRC_DIR="${KUBECONFIG_SRC_DIR:-$HOME/.kube/config.src.d}"
 KUBECONFIG_DEST_DIR="${KUBECONFIG_DEST_DIR:-$HOME/.kube/config.dest.d}"
 KUBECONFIG_ACTIVE=""
-KUBECH_NAMESPACE_CHECK="${KUBECH_NAMESPACE_CHECK:-listall}"
+KUBECH_NAMESPACE_CHECK="${KUBECH_NAMESPACE_CHECK:-list}"
 
 
 #
@@ -35,6 +35,7 @@ VARS:
                            The default lists all namespaces which can be slow in large
                            clusters. After kubernetes 1.22+ all namespaces have a label
                            that can be used to speed this up. Set to "label" to enable this.
+                           Available options: "list", "label".
                            Default: "${KUBECH_NAMESPACE_CHECK}"
 
 USAGE:
