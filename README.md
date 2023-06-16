@@ -80,7 +80,8 @@ VARS:
                            The default lists all namespaces which can be slow in large
                            clusters. After kubernetes 1.22+ all namespaces have a label
                            that can be used to speed this up. Set to "label" to enable this.
-                           Default: "${KUBECH_NAMESPACE_CHECK}"
+                           Available options: "list", "label".
+                           Default: "list"
 
 USAGE:
   kubechc             : List all contexts
