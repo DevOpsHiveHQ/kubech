@@ -13,7 +13,7 @@ jobs:
     name: Lint shell files (shellcheck)
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
     - name: Run ShellCheck
       uses: ludeeus/action-shellcheck@master
       with:
@@ -24,9 +24,9 @@ jobs:
     name: Fmt shell files (shfmt)
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e # v1
     - name: Run the sh-checker
-      uses: luizm/action-sh-checker@v0.3.0
+      uses: luizm/action-sh-checker@7f44869033b40ee4ffe7dc76c87a1bc66e3d025a # v0.3.0
       env:
         SHFMT_OPTS: -sr -i 4 -d -ci
       with:
