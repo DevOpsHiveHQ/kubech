@@ -40,7 +40,7 @@ i.e. same as `kubectx/kubens` but per shell/terminal.
 ## Install
 Clone this repo, then source `kubech` in your shell config file.
 ```bash
-git clone https://github.com/aabouzaid/kubech ~/.kubech
+git clone https://github.com/DevOpsHiveHQ/kubech ~/.kubech
 ```
 
 ### Bash
