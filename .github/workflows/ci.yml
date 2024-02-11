@@ -26,7 +26,7 @@ jobs:
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
     - name: Run the sh-checker
-      uses: luizm/action-sh-checker@7f44869033b40ee4ffe7dc76c87a1bc66e3d025a # v0.3.0
+      uses: luizm/action-sh-checker@c6edb3de93e904488b413636d96c6a56e3ad671a # v0.8.0
       env:
         SHFMT_OPTS: -sr -i 4 -d -ci
       with:
