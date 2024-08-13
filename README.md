@@ -1,8 +1,15 @@
 <!-- omit in toc -->
-# kubech (kubectl change)
-Set kubectl contexts/namespaces per shell/terminal to manage multi Kubernetes cluster at the same time.
 
-i.e. same as `kubectx/kubens` but per shell/terminal.
+<p align="center">
+  <a href="https://github.com/DevOpsHiveHQ/kubech" style="display: block; padding: 1em 0;">
+    <img width="128px" alt="KubeZero Logo" border="0" src="./img/kubech-logo.svg"/>
+  </a>
+</p>
+
+<h1 align="center">Kubech</h1>
+<p align="center">
+  Set kubectl contexts/namespaces per shell/terminal to manage multi Kubernetes clusters at the same time, like kubectx/kubens but per shell/terminal.
+</p>
 
 <!-- omit in toc -->
 ## ToC
