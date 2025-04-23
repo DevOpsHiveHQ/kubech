@@ -183,3 +183,11 @@ kubechr () {
 }
 
 alias kchr='kubechr'
+
+#
+# Zeroing/resetting the KUBECONFIG env var.
+kubechz () {
+    export KUBECONFIG="${KUBECONFIG_ORIG}"
+}
+
+alias kchr='kubechz'
