@@ -45,6 +45,8 @@ USAGE:
   kubechn <NAMESPACE> : Switch to namespace <NAMESPACE>
   kubechu             : Unset the active context. This is just a safty net
                         to avoid applying config by mistake to the wrong cluster.
+  kubechr             : Remove auto-generated kubeconf files from kubech dist dir.
+  kubechz             : Zeroing/resetting the KUBECONFIG env var.
 EOF
 }
 

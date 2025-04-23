@@ -13,6 +13,7 @@
 
 <!-- omit in toc -->
 ## ToC
+
 - [Why](#why)
 - [Features](#features)
 - [Install](#install)
@@ -27,6 +28,7 @@
 - [To-do](#to-do)
 
 ## Why
+
 - If you manage multi K8s clusters, you will need a handy way to work more than one cluster at the same time.
 - [kubectx/kubens](https://github.com/ahmetb/kubectx) tools fix this problem but globally,
   that means all shells and terminals will have the same context/namespace.
@@ -34,6 +36,7 @@
 - Thus, `kubech` comes to fix this problem so you can set K8s cluster context/namespace per shell/terminal.
 
 ## Features
+
 - Each shell/terminal will have its own context (K8s cluster) or namespace!
 - Easy to use! Just source it in your favorite shell.
 - It works out of the box! No aliases, no extra customizations,
@@ -45,30 +48,38 @@
 - It supports autocomplete for contexts and namespaces.
 
 ## Install
+
 Clone this repo, then source `kubech` in your shell config file.
-```bash
+
+```shell
 git clone https://github.com/DevOpsHiveHQ/kubech ~/.kubech
 ```
 
 ### Bash
-```
+
+```shell
 echo 'source ~/.kubech/kubech' >> ~/.bashrc
 echo 'source ~/.kubech/completion/kubech.bash' >> ~/.bashrc
 ```
+
 ### Zsh
+
 Completion for `zsh` with `oh-my-zsh` enabled.
-```
+
+```shell
 echo 'source ~/.kubech/kubech' >> ~/.zshrc
 ln -s ~/.kubech/completion/kubechn.zsh ~/.oh-my-zsh/completions/_kubechn.zsh
 ln -s ~/.kubech/completion/kubechc.zsh ~/.oh-my-zsh/completions/_kubechc.zsh
 ```
 
 Please make sure `autoload -U compinit && compinit` is added to `~/.zshrc` if not please execute below command.
-```
+
+```shell
 echo  'autoload -U compinit && compinit' >> ~/.zshrc
 ```
 
 ## Usage
+
 ```
 NOTE:
   - The command "kubech" is just a meta for other commands. So kubech does nothing by itself.
@@ -97,23 +108,28 @@ USAGE:
   kubechn <NAMESPACE> : Switch to namespace <NAMESPACE>
   kubechu             : Unset the active context. This is just a safty net
                         to avoid applying config by mistake to the wrong cluster.
+  kubechr             : Remove auto-generated kubeconf files from kubech dist dir.
+  kubechz             : Zeroing/resetting the KUBECONFIG env var.
 ```
 
 ### List available contexts
-```
+
+```shell
 $ kubechc
 k8s_cluster01
 k8s_cluster02
 ```
 
 ### Switch context
+
 No need to write the full name, press tab for auto complete.
 ```
 $ kubechc k8s_cluster01
 ```
 
 ### List available namespaces
-```
+
+```shell
 $ kubechn
 default
 kube-public
@@ -122,12 +138,15 @@ monitoring
 ```
 
 ### Switch namespace
+
 No need to write the full name, press tab for auto complete.
-```
+
+```shell
 $ kubechn monitoring
 ```
 
 ## Notes
+
 - This tools has been tested with `bash 4.4` only. However it should work with other shells like `zsh`.
 - It's recommended to use this tool with [kube-ps1](https://github.com/jonmosco/kube-ps1)
   so current cluster is more visible.
@@ -135,4 +154,5 @@ $ kubechn monitoring
   to manage contexts/namespaces globally.
 
 ## To-do
+
 - Test it with older `bash` versions like bash v3 on MacOS.
